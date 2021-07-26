@@ -14,4 +14,12 @@ from keras.layers import Dense, Activation ,Dropout
 from keras.optimizers import SGD 
 import random 
 
+#initializing the parameters we're going to use 
+words = []
+classes = []
+documents = []
+ignore_words = ['?' , '!']
+data_file = open('intents.json').read()
+intents = json.loads(data_file)
+
 
