@@ -30,5 +30,17 @@ def bow(sen , words, details = True) :
                 if details :
                     print("found in bag : %s" % z)
     return (np.array(bag))
+
+def predict_class(sen , model) :
+    #filter predictions below a threshold
+    pr = bow (sen, words , details=False)
+    result = model.predict(np.array([pr]))[0]
+    ERROR_THRESHOLD = 0.25 
+    res = [[x,y] for x,y in enumerate(result) if y > ERROR_THRESHOLD]
+    #sorting by probabilty strength 
+    res.sort(key= lambda x: x[1] ,reverse = True)
+    ret_list =[]
+    for x in res :
+        ret_list.append({"intent" : classes[x[0]],"probabilty": str(x[1])})
+    return ret_list
     
-     
