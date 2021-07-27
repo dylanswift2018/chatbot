@@ -55,6 +55,41 @@ pickle.dump(words, open('words.pkl' , 'wb'))
 pickle.dump(classes , open('classes.pkl','wb'))
 
 # creating training and testing data 
+train = []
+#creating empty array for output 
+output_empty = [0] *len(classes)
+#training set we have a bag of words for each sentence 
+for doc in documents :
+    #init the bag 
+    bag = []
+    #list of tokenized words for the pattern 
+    pattern_words = doc[0]
+    #lemmatizing each word for the pattern 
+    pattern_words = [lemmatizer.lemmatize(word.lower()) for word in pattern_words]
+    #creating our bag of words array with 1 if the word match found in current pattern 
+    for w in words: 
+        bag.append(1)  if w in pattern_words else bag.append(0)
 
+    #output is 0 for each tag and 1 for current tag (for each pattern)
+    output_row = list(output_empty)
+    output_row[classes.index(doc[1])] = 1
 
-    
+    train.append([bag , output_row])
+
+#shuffling the features and turining it into an np.array 
+random.shuffle(train)
+train = np.array(train)
+#creating training and testin lists X patterns and Y intents 
+train_x = list(train[:,0])
+train_y = list(train[:,1])
+print("Training data created")
+
+# building the model 
+#we gonna build a DNN that has 3 layers usin keras sequential API
+
+model = Sequential()
+model.add(Dense(128 , inpu_shape = (len(train_x[0]),),activation= 'relu'))
+model.add(Dropout(0.5))
+model.add(Dense(64,activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(len(train_y[0]), activation ='softmax'))
